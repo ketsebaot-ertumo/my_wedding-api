@@ -15,17 +15,25 @@ const commonConfig = {
   dialectModule: require("pg"),
 };
 
+// SSL configuration for Neon
+const sslConfig = {
+  ssl: {
+    require: true,
+    rejectUnauthorized: false, 
+  },
+};
+
 module.exports = {
   development: {
     ...commonConfig,
-    dialectOptions: {
-      ssl: { require: true, rejectUnauthorized: false },
-    },
+    dialectOptions: sslConfig,
   },
   test: {
     ...commonConfig,
+    dialectOptions: sslConfig,
   },
   production: {
     ...commonConfig,
+    dialectOptions: sslConfig, 
   },
 };
