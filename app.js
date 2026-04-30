@@ -23,7 +23,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-const allowedOrigins = ["http://localhost:3000",];
+const allowedOrigins = ["http://localhost:3000","https://my-wedding-indol.vercel.app", "https://azaria-ketsi.vercel.app"];
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {

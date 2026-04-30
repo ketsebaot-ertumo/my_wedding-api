@@ -41,4 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 # credentials
-src/credentials/*.json
+credentials/*.json
+oauth2.json
+
