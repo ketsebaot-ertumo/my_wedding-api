@@ -2,8 +2,73 @@ const db = require('../models');
 const { Op } = require('sequelize');
 const { buildPagination } = require('../utils/pagination');
 const throwError = require("../utils/throwError");
+const googleDriveService = require('./googleDrive.service');
+
+
+// Helper function
+function getTypeFromMimeType(mimeType) {
+  if (!mimeType) return null;
+  if (mimeType.startsWith('image/')) return 'image';
+  if (mimeType.startsWith('video/')) return 'video';
+  return null;
+}
 
 class MediaService {
+  // Create new media with Google Drive upload
+  async createMedia(mediaData, file) {
+    try {
+      // Upload file to Google Drive first
+      const driveFile = await googleDriveService.uploadFile(file);
+      
+      // Prepare media data with Drive URL
+      const mediaPayload = {
+        url: driveFile.url,                    // URL from Google Drive
+        type: getTypeFromMimeType(file.mimetype),
+        filename: driveFile.name,
+        size: file.size,
+        guest_id: mediaData.guest_id,
+        uploadedBy: mediaData.uploadedBy || 'Guest',
+        mimeType: file.mimetype,
+        caption: mediaData.caption || null,
+        metadata: {
+          driveFileId: driveFile.id,
+          driveWebViewLink: driveFile.webViewLink,
+          originalName: file.originalname,
+          ...mediaData.metadata
+        }
+      };
+
+      // Validate required fields
+      if (!mediaPayload.url || !mediaPayload.type || !mediaPayload.filename || 
+          !mediaPayload.size || !mediaPayload.guest_id || !mediaPayload.uploadedBy) {
+        throw new Error('Missing required media fields');
+      }
+
+      if (mediaPayload.type !== 'image' && mediaPayload.type !== 'video') {
+        throw new Error('Invalid media type. Must be either image or video.');
+      }
+
+      // Check for duplicate (optional - you might want to check by filename or Drive file ID)
+      const existingMedia = await db.Media.findOne({
+        where: { 
+          url: mediaPayload.url 
+        }
+      });
+
+      if (existingMedia) {
+        throw new Error('Media with the same URL already exists');
+      }
+
+      // Save to database
+      const media = await db.Media.create(mediaPayload);
+      return media;
+
+    } catch (error) {
+      throw new Error(`Failed to create media: ${error.message}`);
+    }
+  }
+
+  
   // Get all media with pagination, filtering, and sorting
   async getAllMedia(query) {
     const { page, limit, offset, order } = buildPagination(query);
@@ -103,29 +168,30 @@ class MediaService {
     }
   }
 
-  // Create new media
-  async createMedia(mediaData) {
-    try {
-      if(!mediaData.url || !mediaData.type || !mediaData.filename || !mediaData.size || !mediaData.guest_id || !mediaData.uploadedBy) {
-        throwError('Missing required media fields', 400);
-      }
+  // // Create new media
+  // async createMedia(mediaData) {
+  //   try {
+  //     if(!mediaData.url || !mediaData.type || !mediaData.filename || !mediaData.size || !mediaData.guest_id || !mediaData.uploadedBy) {
+  //       throwError('Missing required media fields', 400);
+  //     }
 
-      if (mediaData.type !== 'image' && mediaData.type !== 'video') {
-        throwError('Invalid media type. Must be either image or video.', 400);
-      }
-      const existingMedia = await db.Media.findOne({where: mediaData});
+  //     if (mediaData.type !== 'image' && mediaData.type !== 'video') {
+  //       throwError('Invalid media type. Must be either image or video.', 400);
+  //     }
+  //     const existingMedia = await db.Media.findOne({where: mediaData});
 
-      if (existingMedia) {
-        throwError('Media with the same URL already exists', 409);
-      }
+  //     if (existingMedia) {
+  //       throwError('Media with the same URL already exists', 409);
+  //     }
 
-      const media = await db.Media.create(mediaData);
+  //     const media = await db.Media.create(mediaData);
 
-      return media;
-    } catch (error) {
-      throwError(`Failed to create media: ${error.message}`);
-    }
-  }
+  //     return media;
+  //   } catch (error) {
+  //     throwError(`Failed to create media: ${error.message}`);
+  //   }
+  // }
+
 
   // Update media details
   async updateMedia(id, updateData) {

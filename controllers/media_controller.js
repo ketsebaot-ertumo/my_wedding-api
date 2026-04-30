@@ -29,6 +29,7 @@ class MediaController {
       return error(res, 'Failed to fetch media', err.message);
     }
   }
+  
 
   // Create new media
   async createMedia(req, res) {
@@ -46,6 +47,7 @@ class MediaController {
       return error(res, 'Failed to create media', err.message);
     }
   }
+
 
   // Update media
   async updateMedia(req, res) {

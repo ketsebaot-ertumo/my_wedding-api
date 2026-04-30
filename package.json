@@ -12,7 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "dev": "nodemon server.js",
+    "dev": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" nodemon server.js",
     "seed": "node seeders/index.js",
     "db:sync": "node -e \"require('./models').sequelize.sync({ force: true })\"",
     "db:reset": "npm run db:sync && npm run seed"
@@ -25,10 +25,12 @@
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "express-rate-limit": "^8.2.1",
-    "express-validator": "^7.3.1",
+    "express-validator": "^7.3.2",
     "google-auth-library": "^10.5.0",
+    "googleapis": "^171.4.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
+    "multer": "^2.1.1",
     "nodemon": "^3.1.11",
     "pg": "^8.16.3",
     "pg-connection-string": "^2.9.1",
