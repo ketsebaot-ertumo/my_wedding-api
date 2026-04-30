@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 const express = require("express");
 const app = require("./app"); // your Express app
 const { sequelize } = require("./models/index");
@@ -6,6 +6,7 @@ const { sequelize } = require("./models/index");
 const PORT = process.env.PORT || 4000;
 
 // Connect to database and start server
+console.log("DB URL:", process.env.DATABASE_URL);
 sequelize
   .authenticate()
   .then(() => {

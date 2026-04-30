@@ -130,7 +130,7 @@ class MediaService {
         total: count,
         page: parseInt(page),
         totalPages: Math.ceil(count / limit),
-        // limit: parseInt(limit),
+        limit: parseInt(rows.length), // or shows limit per page
         hasMore: offset + rows.length < count,
         media: rows,
       };
