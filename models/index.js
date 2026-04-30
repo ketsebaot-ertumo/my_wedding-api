@@ -27,7 +27,22 @@ if (config.use_env_variable) {
     }
   });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  // sequelize = new Sequelize(config.database, config.username, config.password, config);
+   // Make sure to include all config properties including dialectOptions
+  sequelize = new Sequelize(
+    config.database, 
+    config.username, 
+    config.password, 
+    {
+      host: config.host,
+      port: config.port,
+      dialect: config.dialect,
+      logging: config.logging,
+      dialectModule: config.dialectModule,
+      dialectOptions: config.dialectOptions, // This is critical!
+      pool: config.pool
+    }
+  );
 }
 
 fs

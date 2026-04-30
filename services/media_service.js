@@ -76,7 +76,7 @@ class MediaService {
       const where = { isActive: true };
       console.log('query', query);
       
-     if (query.type && query.type !== 'all' && (query.type === 'image' || query.type === 'video')) {
+      if (query.type && query.type !== 'all' && (query.type === 'image' || query.type === 'video')) {
         where.type = query.type;
       }
       
@@ -87,18 +87,19 @@ class MediaService {
         ];
       }
       
-      const { count, rows } = await db.Media.findAndCountAll({
+      // Get count separately (without includes)
+      const count = await db.Media.count({ where });
+      
+      // Get data with includes
+      const rows = await db.Media.findAll({
         where,
         attributes: {
           include: [
-            // Like count
             [db.sequelize.literal(`(
               SELECT COUNT(*)::int
               FROM likes
               WHERE likes.media_id = "Media"."id"
             )`), 'likeCount'],
-
-            // Comment count
             [
               db.sequelize.literal(`(
                 SELECT COUNT(*)::int
@@ -130,7 +131,8 @@ class MediaService {
         total: count,
         page: parseInt(page),
         totalPages: Math.ceil(count / limit),
-        limit: parseInt(rows.length), // or shows limit per page
+        limit: parseInt(limit),
+        pageSize: parseInt(rows.length), // lenght of current page, not total limit
         hasMore: offset + rows.length < count,
         media: rows,
       };
@@ -138,6 +140,77 @@ class MediaService {
       throwError(`Failed to fetch media: ${error.message}`);
     }
   }
+  // async getAllMedia(query) {
+  //   const { page, limit, offset, order } = buildPagination(query);
+  //   try {
+  //     const where = { isActive: true };
+  //     console.log('query', query);
+      
+  //    if (query.type && query.type !== 'all' && (query.type === 'image' || query.type === 'video')) {
+  //       where.type = query.type;
+  //     }
+      
+  //     if (query.search) {
+  //       where[Op.or] = [
+  //         { filename: { [Op.iLike]: `%${query.search}%` } },
+  //         { caption: { [Op.iLike]: `%${query.search}%` } }
+  //       ];
+  //     }
+      
+  //     const { count, rows } = await db.Media.findAndCountAll({
+  //       where,
+  //       attributes: {
+  //         include: [
+  //           // Like count
+  //           [db.sequelize.literal(`(
+  //             SELECT COUNT(*)::int
+  //             FROM likes
+  //             WHERE likes.media_id = "Media"."id"
+  //           )`), 'likeCount'],
+
+  //           // Comment count
+  //           [
+  //             db.sequelize.literal(`(
+  //               SELECT COUNT(*)::int
+  //               FROM comments
+  //               WHERE comments.media_id = "Media"."id"
+  //             )`),
+  //             'commentCount'
+  //           ],
+  //         ],
+  //       },
+  //       include: [
+  //         {
+  //           model: db.Like,
+  //           as: 'likes',
+  //           attributes: ['id', 'guest_id'],
+  //           duplicating: false,
+  //         },
+  //         {
+  //           model: db.Comment,
+  //           as: 'comments',
+  //           attributes: ['id', 'guest_name', 'content', 'is_edited', 'status', 'createdAt'],
+  //           duplicating: false,
+  //         }
+  //       ],
+  //       order,
+  //       limit,
+  //       offset,
+  //     });
+
+  //     return {
+  //       total: count,
+  //       page: parseInt(page),
+  //       totalPages: Math.ceil(count / limit),
+  //       limit: parseInt(rows.length), // or shows limit per page
+  //       hasMore: offset + rows.length < count,
+  //       media: rows,
+  //     };
+  //   } catch (error) {
+  //     throwError(`Failed to fetch media: ${error.message}`);
+  //   }
+  // }
+
 
   // Get media by ID
   async getMediaById(id) {
