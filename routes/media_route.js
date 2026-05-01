@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mediaController = require('../controllers/media_controller');
-const upload = require('../middleware/upload');
+// const upload = require('../middleware/upload');
 
 // Use memory (NOT disk) for Vercel
 // const upload = multer({ storage: multer.memoryStorage() });

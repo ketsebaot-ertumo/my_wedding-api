@@ -39,7 +39,7 @@ class MediaController {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const media = await mediaService.createMedia(req.body, req.file);
+      const media = await mediaService.createMedia(req.body);
       // res.status(201).json(media);
       return success(res, 'Media created successfully', media, 201);
     } catch (err) {
