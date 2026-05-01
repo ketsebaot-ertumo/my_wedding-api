@@ -168,12 +168,12 @@ class GoogleDriveService {
             // This automatically uses your gcloud credentials
             const auth = new google.auth.GoogleAuth({
                 // keyFile: process.env.GOOGLE_CREDENTIALS,
-                // credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON),
-                credentials: process.env.GOOGLE_CREDENTIALS_JSON
-                    ? JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
-                    : undefined,
-                // keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || undefined,
-                scopes: ['https://www.googleapis.com/auth/drive.file']
+                credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON),
+                // credentials: process.env.GOOGLE_CREDENTIALS_JSON
+                //     ? JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
+                //     : undefined,
+                // scopes: ['https://www.googleapis.com/auth/drive.file']
+                scopes: ['https://www.googleapis.com/auth/drive']
             });
             const authClient = await auth.getClient();
             this.drive = google.drive({ version: 'v3', auth: authClient });
