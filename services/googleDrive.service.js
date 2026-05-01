@@ -171,7 +171,7 @@ class GoogleDriveService {
                 credentials: process.env.GOOGLE_CREDENTIALS_JSON
                     ? JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
                     : undefined,
-                keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || undefined,
+                // keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || undefined,
                 scopes: ['https://www.googleapis.com/auth/drive.file']
             });
             const authClient = await auth.getClient();
