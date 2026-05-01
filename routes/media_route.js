@@ -13,8 +13,8 @@ router.get('/stats', mediaController.getStats);
 router.get('/', mediaController.getAllMedia);
 router.get('/:id', mediaController.getMediaById);
 // router.post('/', mediaController.createMedia);
-// router.post('/', upload.single('file'), mediaController.createMedia);
-router.post('/', upload.array('files'), mediaController.createMedia);
+router.post('/', upload.single('file'), mediaController.createMedia);
+// router.post('/', upload.array('files'), mediaController.createMedia);
 router.put('/:id', mediaController.updateMedia);
 router.delete('/:id', mediaController.deleteMedia);
 
