@@ -18,20 +18,23 @@ class MediaService {
   // Create new media
   async createMedia(mediaData) {
     try {
-      if(!mediaData.url || !mediaData.type || !mediaData.filename || !mediaData.size || !mediaData.guest_id) {
+      if(!mediaData.url || !mediaData.mimeType || !mediaData.filename || !mediaData.size || !mediaData.guest_id) {
         throwError('Missing required media fields', 400);
       }
 
-      if (mediaData.type !== 'image' && mediaData.type !== 'video') {
+      const type = getTypeFromMimeType(mediaData.mimeType);
+
+      if (type !== 'image' && type !== 'video') {
         throwError('Invalid media type. Must be either image or video.', 400);
       }
-      const existingMedia = await db.Media.findOne({where: mediaData});
+
+      const existingMedia = await db.Media.findOne({where: {type, ...mediaData}});
 
       if (existingMedia) {
         throwError('Media with the same URL already exists', 409);
       }
 
-      const media = await db.Media.create(mediaData);
+      const media = await db.Media.create({type, ...mediaData});
 
       return media;
     } catch (error) {
