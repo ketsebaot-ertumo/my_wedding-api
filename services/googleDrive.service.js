@@ -154,6 +154,7 @@
 // module.exports = new GoogleDriveService();
 const { google } = require('googleapis');
 const fs = require('fs');
+const { Readable } = require('stream');
 
 class GoogleDriveService {
     constructor() {
@@ -189,12 +190,16 @@ class GoogleDriveService {
                 parents: [this.folderId]
             };
 
+            // const media = {
+            //     mimeType: file.mimetype,
+            //     body: fs.createReadStream(file.path)
+            // };
             const media = {
                 mimeType: file.mimetype,
-                body: fs.createReadStream(file.path)
+                body: Readable.from(file.buffer)
             };
 
-            console.log(`📤 Uploading: ${file.originalname}`);
+            console.log(`📤 Uploading: ${file?.originalname}`);
             
             const response = await drive.files.create({
                 resource: fileMetadata,

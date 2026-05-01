@@ -17,6 +17,9 @@ class MediaService {
   // Create new media with Google Drive upload
   async createMedia(mediaData, file) {
     try {
+      if (!file) {
+        throw new Error('No file provided');
+      }
       // Upload file to Google Drive first
       const driveFile = await googleDriveService.uploadFile(file);
       
