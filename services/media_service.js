@@ -33,7 +33,7 @@ class MediaService {
         metadata: {
           driveFileId: driveFile.id,
           driveWebViewLink: driveFile.webViewLink,
-          originalName: file.originalname,
+          originalName: file.name,
           ...mediaData.metadata
         }
       };
