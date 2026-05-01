@@ -1,7 +1,7 @@
-const multer = require('multer');
+// const multer = require('multer');
 
-const upload = multer({
-    dest: 'uploads/' // temporary local storage
-});
+// const upload = multer({
+//     dest: 'uploads/' // temporary local storage
+// });
 
-module.exports = upload;
+// module.exports = upload;
