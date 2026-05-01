@@ -185,7 +185,7 @@ class GoogleDriveService {
             const drive = await this.getDrive();
             
             const fileMetadata = {
-                name: `${Date.now()}_${file.name}`,
+                name: `${Date.now()}_${file.originalname}`,
                 parents: [this.folderId]
             };
 
@@ -194,7 +194,7 @@ class GoogleDriveService {
                 body: fs.createReadStream(file.path)
             };
 
-            console.log(`📤 Uploading: ${file.name}`);
+            console.log(`📤 Uploading: ${file.originalname}`);
             
             const response = await drive.files.create({
                 resource: fileMetadata,
