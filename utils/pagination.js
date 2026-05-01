@@ -10,7 +10,7 @@ exports.buildPagination = (query) => {
   };
 
   if (query.sort) {
-    const sort = query.sort;
+    const sort = query.sort ? query.sort : 'createdAt';
     const order = query.order === "asc" ? "ASC" : "DESC";
     pagination.order = [[sort, order]];
   }

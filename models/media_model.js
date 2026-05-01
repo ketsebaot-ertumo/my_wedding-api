@@ -59,6 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     caption: {
       type: DataTypes.TEXT,
       allowNull: true,
+      defaultValue: '🌟 Every picture tells our love story'
     },
     guest_id: {
       type: DataTypes.UUID,
