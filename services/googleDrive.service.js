@@ -156,7 +156,8 @@ const fs = require('fs');
 class GoogleDriveService {
     constructor() {
         this.drive = null;
-        this.folderId = '1tqLs1f73zhCk8zuu_DELUcL0RglBS5-l'; // Your folder ID
+        // this.folderId = '1tqLs1f73zhCk8zuu_DELUcL0RglBS5-l'; // Your folder ID
+        this.folderId = process.env.FOLDER_ID;
     }
 
     async getDrive() {
