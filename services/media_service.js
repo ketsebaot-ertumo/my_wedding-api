@@ -3,15 +3,8 @@ const { Op } = require('sequelize');
 const { buildPagination } = require('../utils/pagination');
 const throwError = require("../utils/throwError");
 const googleDriveService = require('./googleDrive.service');
+const { getTypeFromMimeType } = require('../utils/getMediaType');
 
-
-// Helper function
-function getTypeFromMimeType(mimeType) {
-  if (!mimeType) return null;
-  if (mimeType.startsWith('image/')) return 'image';
-  if (mimeType.startsWith('video/')) return 'video';
-  return null;
-}
 
 class MediaService {
   
