@@ -21,7 +21,12 @@ class MediaService {
         throwError('Invalid media type. Must be either image or video.', 400);
       }
 
-      const existingMedia = await db.Media.findOne({where: mediaData});
+      const existingMedia = await db.Media.findOne({
+        where: {
+          url: mediaData.url,
+          guest_id: mediaData.guest_id
+        }
+      });
 
       if (existingMedia) {
         throwError('Media with the same URL already exists', 409);
