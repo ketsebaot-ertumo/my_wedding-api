@@ -6,7 +6,6 @@ const { sequelize } = require("./models/index");
 const PORT = process.env.PORT || 4000;
 
 // console.log("DB URL:", process.env.DATABASE_URL);
-console.log("GOOGLE CREDS EXISTS:", !!process.env.GOOGLE_CREDENTIALS_JSON);
 
 // Connect to database and start server
 sequelize
