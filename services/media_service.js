@@ -14,62 +14,88 @@ function getTypeFromMimeType(mimeType) {
 }
 
 class MediaService {
-  // Create new media with Google Drive upload
-  async createMedia(mediaData, file) {
+  
+  // Create new media
+  async createMedia(mediaData) {
     try {
-      if (!file) {
-        throw new Error('No file provided');
-      }
-      // Upload file to Google Drive first
-      const driveFile = await googleDriveService.uploadFile(file);
-      
-      // Prepare media data with Drive URL
-      const mediaPayload = {
-        url: driveFile.url,                    // URL from Google Drive
-        type: getTypeFromMimeType(file.mimetype),
-        filename: driveFile.name,
-        size: file.size,
-        guest_id: mediaData.guest_id,
-        uploadedBy: mediaData.uploadedBy || 'Guest',
-        mimeType: file.mimetype,
-        caption: mediaData.caption || null,
-        metadata: {
-          driveFileId: driveFile.id,
-          driveWebViewLink: driveFile.webViewLink,
-          originalName: file.originalname,
-          ...mediaData.metadata
-        }
-      };
-
-      // Validate required fields
-      if (!mediaPayload.url || !mediaPayload.type || !mediaPayload.filename || 
-          !mediaPayload.size || !mediaPayload.guest_id || !mediaPayload.uploadedBy) {
-        throw new Error('Missing required media fields');
+      if(!mediaData.url || !mediaData.type || !mediaData.filename || !mediaData.size || !mediaData.guest_id) {
+        throwError('Missing required media fields', 400);
       }
 
-      if (mediaPayload.type !== 'image' && mediaPayload.type !== 'video') {
-        throw new Error('Invalid media type. Must be either image or video.');
+      if (mediaData.type !== 'image' && mediaData.type !== 'video') {
+        throwError('Invalid media type. Must be either image or video.', 400);
       }
-
-      // Check for duplicate (optional - you might want to check by filename or Drive file ID)
-      const existingMedia = await db.Media.findOne({
-        where: { 
-          url: mediaPayload.url 
-        }
-      });
+      const existingMedia = await db.Media.findOne({where: mediaData});
 
       if (existingMedia) {
-        throw new Error('Media with the same URL already exists');
+        throwError('Media with the same URL already exists', 409);
       }
 
-      // Save to database
-      const media = await db.Media.create(mediaPayload);
-      return media;
+      const media = await db.Media.create(mediaData);
 
+      return media;
     } catch (error) {
-      throw new Error(`Failed to create media: ${error.message}`);
+      throwError(`Failed to create media: ${error.message}`);
     }
   }
+
+
+  // // Create new media with Google Drive upload
+  // async createMedia(mediaData, file) {
+  //   try {
+  //     if (!file) {
+  //       throw new Error('No file provided');
+  //     }
+  //     // Upload file to Google Drive first
+  //     const driveFile = await googleDriveService.uploadFile(file);
+      
+  //     // Prepare media data with Drive URL
+  //     const mediaPayload = {
+  //       url: driveFile.url,                    // URL from Google Drive
+  //       type: getTypeFromMimeType(file.mimetype),
+  //       filename: driveFile.name,
+  //       size: file.size,
+  //       guest_id: mediaData.guest_id,
+  //       uploadedBy: mediaData.uploadedBy || 'Guest',
+  //       mimeType: file.mimetype,
+  //       caption: mediaData.caption || null,
+  //       metadata: {
+  //         driveFileId: driveFile.id,
+  //         driveWebViewLink: driveFile.webViewLink,
+  //         originalName: file.originalname,
+  //         ...mediaData.metadata
+  //       }
+  //     };
+
+  //     // Validate required fields
+  //     if (!mediaPayload.url || !mediaPayload.type || !mediaPayload.filename || 
+  //         !mediaPayload.size || !mediaPayload.guest_id || !mediaPayload.uploadedBy) {
+  //       throw new Error('Missing required media fields');
+  //     }
+
+  //     if (mediaPayload.type !== 'image' && mediaPayload.type !== 'video') {
+  //       throw new Error('Invalid media type. Must be either image or video.');
+  //     }
+
+  //     // Check for duplicate (optional - you might want to check by filename or Drive file ID)
+  //     const existingMedia = await db.Media.findOne({
+  //       where: { 
+  //         url: mediaPayload.url 
+  //       }
+  //     });
+
+  //     if (existingMedia) {
+  //       throw new Error('Media with the same URL already exists');
+  //     }
+
+  //     // Save to database
+  //     const media = await db.Media.create(mediaPayload);
+  //     return media;
+
+  //   } catch (error) {
+  //     throw new Error(`Failed to create media: ${error.message}`);
+  //   }
+  // }
 
   
   // Get all media with pagination, filtering, and sorting
@@ -243,30 +269,6 @@ class MediaService {
       throwError(`Failed to fetch media: ${error.message}`);
     }
   }
-
-  // // Create new media
-  // async createMedia(mediaData) {
-  //   try {
-  //     if(!mediaData.url || !mediaData.type || !mediaData.filename || !mediaData.size || !mediaData.guest_id || !mediaData.uploadedBy) {
-  //       throwError('Missing required media fields', 400);
-  //     }
-
-  //     if (mediaData.type !== 'image' && mediaData.type !== 'video') {
-  //       throwError('Invalid media type. Must be either image or video.', 400);
-  //     }
-  //     const existingMedia = await db.Media.findOne({where: mediaData});
-
-  //     if (existingMedia) {
-  //       throwError('Media with the same URL already exists', 409);
-  //     }
-
-  //     const media = await db.Media.create(mediaData);
-
-  //     return media;
-  //   } catch (error) {
-  //     throwError(`Failed to create media: ${error.message}`);
-  //   }
-  // }
 
 
   // Update media details
