@@ -156,10 +156,6 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const { Readable } = require('stream');
 
-const credentials = JSON.parse(
-  Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, 'base64').toString()
-);
-
 
 class GoogleDriveService {
     constructor() {
@@ -173,9 +169,8 @@ class GoogleDriveService {
             // This automatically uses your gcloud credentials
             const auth = new google.auth.GoogleAuth({
                 // keyFile: process.env.GOOGLE_CREDENTIALS,
-                // credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON),
+                credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON),
                 // scopes: ['https://www.googleapis.com/auth/drive.file']
-                credentials,
                 scopes: ['https://www.googleapis.com/auth/drive']
             });
             const authClient = await auth.getClient();
