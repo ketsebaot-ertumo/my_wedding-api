@@ -66,14 +66,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       comment: 'Guest ID of the uploader'
     },
-    // likesCount: {
-    //   type: DataTypes.INTEGER,
-    //   defaultValue: 0,
-    // },
-    // commentsCount: {
-    //   type: DataTypes.INTEGER,
-    //   defaultValue: 0,
-    // },
+    likesCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    commentsCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     downloadCount: {
       type: DataTypes.INTEGER,
       allowNull: false,
