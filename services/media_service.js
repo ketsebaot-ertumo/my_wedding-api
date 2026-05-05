@@ -149,7 +149,7 @@ class MediaService {
           {
             model: db.Comment,
             as: 'comments',
-            // attributes: ['id', 'guest_name', 'content', 'is_edited', 'status', 'createdAt'],
+            attributes: ['id', 'guest_name', 'content', 'is_edited', 'status', 'createdAt'],
           }
         ],
         order,
