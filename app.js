@@ -8,6 +8,8 @@ const rateLimit = require("express-rate-limit");
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ limit: "25mb", extended: true }));
 app.use(cookieParser());
