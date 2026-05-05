@@ -363,11 +363,11 @@ class MediaService {
   }
 
   // Add comment to media]
-  async addComment(commentData) {
+  async addComment(id, commentData) {
     const transaction = await db.sequelize.transaction();
     
     try {
-      if(!commentData.media_id || !commentData.guest_name || !commentData.content) {
+      if(!(id || commentData.media_id) || !commentData.guest_name || !commentData.content) {
         throwError('Missing required fields: media_id, guest_name and content are required.', 400);
       }
 
